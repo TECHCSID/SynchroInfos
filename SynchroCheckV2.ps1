@@ -70,7 +70,7 @@ if($null -ne $synchroService)
             $i = 1;
             foreach ($configUser in $configUserMapping)
             {
-                $SortieConfig += " / User $i : " + $configUser.PLoginName + " - Email : " + $configUser.XLogin;
+                $SortieConfig += " / User $i : " + $configUser.PLoginName + " : " + $configUser.XLogin;
                 $i++;
             }
         } else {

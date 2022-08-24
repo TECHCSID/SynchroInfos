@@ -13,13 +13,13 @@ if (Test-Path $paramguFile -PathType leaf) {
         $ApplicationEtude = Get-Content $paramguFile | Select -Index ($UpdateLine.LineNumber + 2);
         
         if ($ApplicationEtude.StartsWith("Application") -and $ApplicationEtude.Contains('SynchroExch')) {
-            $SortieConfig += "GU telecharge la synchro";
+            $SortieConfig += "GU down sync";
         } else {
-            $SortieConfig += "GU ne telecharge pas la synchro";
+            $SortieConfig += "GU not down sync";
         }
     }
     else {
-        $SortieConfig += "Prolème de configuration GUpdate";
+        $SortieConfig += "GUpdate Configuration issue";
     }
 }
 
@@ -30,10 +30,10 @@ $synchroService = Get-WmiObject win32_service | ?{$_.Name -like 'Synchronisation
 if($null -ne $synchroService)
 {
     $synchroPath = $synchroService.PathName.Trim().Trim('"');
-    $SortieConfig += " / Synchro Version : ";
+    $SortieConfig += " / Sync Version : ";
     $SortieConfig += [System.Diagnostics.FileVersionInfo]::GetVersionInfo($synchroPath).FileVersion;
 
-    $SortieConfig += " / Etat du service : " + $synchroService.State;
+    $SortieConfig += " / Service Status : " + $synchroService.State;
 
     $synchroDirPath = [System.IO.Path]::GetDirectoryName($synchroPath);
     $ConfigSynchroPath = Join-Path -Path $synchroDirPath -ChildPath "Config"; 
@@ -46,11 +46,11 @@ if($null -ne $synchroService)
         $ConfigOffice365 = $configXml.SelectSingleNode("//Office365");
         $ConfigNotamail = $configXml.SelectSingleNode("//Notamail");
 
-        $SortieConfig += " / Configuration de la Synchro : ";
+        $SortieConfig += " / Config Sync : ";
 
         if($ConfigOffice365.InnerText -eq $true)
         {
-            $SortieConfig += "Office 365 Cloud";
+            $SortieConfig += "Office 365";
         } elseif ($ConfigNotamail.InnerText -eq $true)
         {
             $SortieConfig += "Notamail";
@@ -63,22 +63,22 @@ if($null -ne $synchroService)
         if($configUserMapping.Count -ne 0)
         {
             if($configUserMapping.Count -eq 1) {
-                $SortieConfig += " / 1 utilisateur trouve";
+                $SortieConfig += " / 1 user found";
             } else {
-                $SortieConfig += " / " + $configUserMapping.Count + " utilisateurs trouves";
+                $SortieConfig += " / " + $configUserMapping.Count + " users found";
             }
             $i = 1;
             foreach ($configUser in $configUserMapping)
             {
-                $SortieConfig += " / Utilisateur $i : " + $configUser.PLoginName + " - Email : " + $configUser.XLogin;
+                $SortieConfig += " / User $i : " + $configUser.PLoginName + " - Email : " + $configUser.XLogin;
                 $i++;
             }
         } else {
-            $SortieConfig += " / Pas d'utilisateurs"
+            $SortieConfig += " / no user"
         }
     }
 } else {
-    $SortieConfig = "Pas de Synchronisation Exchange";
+    $SortieConfig = "No Sync";
 }
 
 Write-Host $SortieConfig;

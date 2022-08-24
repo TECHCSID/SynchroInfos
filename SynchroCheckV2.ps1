@@ -50,7 +50,7 @@ if($null -ne $synchroService)
 
         if($ConfigOffice365.InnerText -eq $true)
         {
-            $SortieConfig += "Office 365";
+            $SortieConfig += "365";
         } elseif ($ConfigNotamail.InnerText -eq $true)
         {
             $SortieConfig += "Notamail";
